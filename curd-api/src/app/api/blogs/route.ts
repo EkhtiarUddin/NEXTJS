@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPosts } from "../../../../lib/data";
+import { addPost, getPosts } from "../../../../lib/data";
 
 export const GET = async (req: Request, res: Response) => {
     try {
@@ -14,5 +14,15 @@ export const GET = async (req: Request, res: Response) => {
 };
 
 export const POST = async (req: Request, res: Response) => {
-    console.log("POST REQUEST");
+    const {title, desc} = await req.json();
+    try {
+        const post = { title, desc, date: new Date(), id: Date.now().toString()};
+        addPost(post);
+        return NextResponse.json({message: "OK", post},{status: 201});
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Error", error},
+            {status: 500,}
+        );  
+    }
 };
